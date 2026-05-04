@@ -33,9 +33,28 @@ STREAMLIT_PORT = 8501
 # Students must replace this example with their trained models.
 # Each entry must point to a serialized model saved as `.joblib`, `.pkl`, or `.pickle`.
 MODELS = {
-    "model_a": {
-        "name": "Model A",
-        "description": "A simple baseline model.",
-        "path": MODELS_DIR / "model_a.pkl",
+    "logistic_regression": {
+        "name": "Logistic Regression",
+        "description": "Linear model for binary classification. Baseline interpretable model.",
+        "path": MODELS_DIR / "logistic_regression.pkl",
+        "type": "linear",
+        "advantages": ["Highly interpretable", "Fast training", "Good baseline"],
+        "limitations": ["Assumes linear relationships", "Sensitive to outliers"],
+    },
+    "random_forest": {
+        "name": "Random Forest",
+        "description": "Ensemble of decision trees. Robust to overfitting and handles mixed data types.",
+        "path": MODELS_DIR / "random_forest.pkl",
+        "type": "tree_ensemble",
+        "advantages": ["Handles mixed data types", "Robust to outliers", "Feature importance"],
+        "limitations": ["Less interpretable", "Can be slow on large datasets"],
+    },
+    "xgboost": {
+        "name": "XGBoost",
+        "description": "Gradient boosting framework. State-of-the-art performance for tabular data.",
+        "path": MODELS_DIR / "xgboost.pkl",
+        "type": "boosting",
+        "advantages": ["High performance", "Handles missing values", "Feature selection"],
+        "limitations": ["Computationally intensive", "Hyperparameter tuning required"],
     },
 }
