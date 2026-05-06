@@ -273,21 +273,26 @@ def load_dataset_split(transformed_dataset_path=None):
     """
     if transformed_dataset_path is None:
         transformed_dataset_path = DATA_DIR / "heart_disease_transformed.csv"
-    
-    df = pd.read_csv(transformed_dataset_path)
-    
+
+    if not Path(transformed_dataset_path).exists():
+        raw_path = DATA_DIR / "heart_disease.csv"
+        df = pd.read_csv(raw_path)
+        df = transform_dataset(df, output_path=transformed_dataset_path, verbose=False)
+    else:
+        df = pd.read_csv(transformed_dataset_path)
+
     # Separate features and target
     X = df.drop(columns=["Heart Disease Status"])
     y = df["Heart Disease Status"]
-    
+
     # Apply stratified train/test split
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, 
-        test_size=0.2, 
-        random_state=42, 
+        X, y,
+        test_size=0.2,
+        random_state=42,
         stratify=y
     )
-    
+
     return X_train, X_test, y_train, y_test
 
 

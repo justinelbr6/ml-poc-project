@@ -31,7 +31,9 @@ APP_ENTRYPOINT = config.APP_ENTRYPOINT
 MODELS = config.MODELS
 STREAMLIT_HOST = config.STREAMLIT_HOST
 STREAMLIT_PORT = config.STREAMLIT_PORT
-
+# Ensure the project root is on sys.path so `src` can be imported by the loaded app module.
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 data_module = _load_module("project_data", SRC_DIR / "data.py")
 metrics_module = _load_module("project_metrics", SRC_DIR / "metrics.py")
 model_io_module = _load_module("project_model_io", SRC_DIR / "model_io.py")
@@ -52,6 +54,14 @@ def _validate_models_config() -> None:
             raise ValueError(
                 f"Missing `path` for model `{model_key}` in config.MODELS."
             )
+
+
+def _have_model_files() -> bool:
+    return any(
+        Path(model_config["path"]).exists()
+        for model_config in MODELS.values()
+        if "path" in model_config
+    )
 
 
 def _validate_app_entrypoint() -> None:
@@ -149,20 +159,26 @@ def main() -> None:
             "Implement data.load_dataset_split()."
         ) from exc
 
-    try:
-        metrics_rows = _evaluate_models(X_test, y_test)
-    except NotImplementedError as exc:
-        raise NotImplementedError(
-            "Metric computation is still a template placeholder. "
-            "Implement metrics.compute_metrics()."
-        ) from exc
+    metrics_rows = []
+    if _have_model_files():
+        try:
+            metrics_rows = _evaluate_models(X_test, y_test)
+        except NotImplementedError as exc:
+            raise NotImplementedError(
+                "Metric computation is still a template placeholder. "
+                "Implement metrics.compute_metrics()."
+            ) from exc
 
-    metrics_df = write_metrics(metrics_rows)
+        metrics_df = write_metrics(metrics_rows)
+        print("Model evaluation completed. Metrics saved to results/model_metrics.csv")
+        print(metrics_df.to_string(index=False))
+    else:
+        print(
+            "No trained model files were found. Skipping evaluation and launching Streamlit "
+            "with default or existing metrics."
+        )
 
-    print("Model evaluation completed. Metrics saved to results/model_metrics.csv")
-    print(metrics_df.to_string(index=False))
     print(f"\nLaunching Streamlit on http://{STREAMLIT_HOST}:{STREAMLIT_PORT} ...")
-
     _launch_streamlit()
 
 
