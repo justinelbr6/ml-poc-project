@@ -70,6 +70,6 @@ with col4:
 st.markdown("""
 <div style='background-color: #fff5f5; padding: 20px; border-radius: 10px; border-left: 5px solid #ff6b6b; margin-top: 20px;'>
     <h4>🏆 Choix Final de l'Algorithme</h4>
-    <p>La base de données clinique de <b>Cleveland</b>, reconnue par les cardiologues, a permis de valider nos architectures. Si la <b>Random Forest</b> excelle sur le rappel strict, c'est le <b>Gradient Boosting</b> qui a été sélectionné pour le déploiement sur la dernière page de l'application (Test Patient). En effet, sa capacité d'apprentissage séquentiel des erreurs (boosting) lui confère historiquement la plus grande robustesse face aux nouveaux patients sur le terrain hospitalier. Vous pouvez désormais le tester vous-même en conditions réelles.</p>
+    <p>La base de données clinique de <b>Cleveland</b>, reconnue par les cardiologues, a permis de valider nos architectures. C'est la <b>Random Forest</b> qui a été sélectionnée pour le déploiement sur la dernière page de l'application (Test Patient). En effet, avec son <b>Rappel (Recall) de 100%</b>, elle garantit l'absence de Faux Négatifs, ce qui est une exigence absolue dans un contexte de diagnostic médical. Vous pouvez désormais la tester vous-même en conditions réelles.</p>
 </div>
 """, unsafe_allow_html=True)
