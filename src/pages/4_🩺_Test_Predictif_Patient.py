@@ -27,7 +27,7 @@ st.write("Entrez vos paramètres médicaux (basés sur le dataset Cleveland) pou
 # --- CHARGEMENT DU MODÈLE ---
 @st.cache_resource
 def load_model():
-    model_path = os.path.join(os.path.dirname(__file__), "..", "..", "models", "gradient_boosting.pkl")
+    model_path = os.path.join(os.path.dirname(__file__), "..", "..", "models", "random_forest.pkl")
     if os.path.exists(model_path):
         return joblib.load(model_path)
     return None
