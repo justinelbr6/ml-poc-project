@@ -123,14 +123,49 @@ if submitted:
                 st.markdown("---")
                 st.header("Résultat de l'analyse")
                 
+                import plotly.graph_objects as go
+                
+                fig = go.Figure(go.Indicator(
+                    mode = "gauge+number",
+                    value = risk_percentage,
+                    number = {'font': {'color': '#d94545', 'size': 45}, 'suffix': "%"},
+                    domain = {'x': [0, 1], 'y': [0, 1]},
+                    title = {'text': "Probabilité de Maladie Cardiaque", 'font': {'size': 22, 'color': '#d94545'}},
+                    gauge = {
+                        'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "lightgray", 'tickfont': {'color': 'gray', 'size': 14}},
+                        'bar': {'color': "rgba(0,0,0,0)"},
+                        'bgcolor': "white",
+                        'borderwidth': 0,
+                        'steps': [
+                            {'range': [0, 20], 'color': "#e6f9ec"},
+                            {'range': [20, 50], 'color': "#ffe6e6"},
+                            {'range': [50, 100], 'color': "#ff6b6b"}
+                        ],
+                        'threshold': {
+                            'line': {'color': "#d94545", 'width': 8},
+                            'thickness': 0.8,
+                            'value': risk_percentage
+                        }
+                    }
+                ))
+                
+                fig.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    font={'family': "Arial, sans-serif"},
+                    margin=dict(l=20, r=20, t=50, b=20)
+                )
+                
+                st.plotly_chart(fig, use_container_width=True)
+                
                 if risk_percentage >= 50:
-                    st.markdown(f"<div class='risk-high'>Risque Élevé : {risk_percentage}%</div>", unsafe_allow_html=True)
+                    st.markdown("<h3 style='color: #ff4d4d; text-align: center;'>Risque Élevé</h3>", unsafe_allow_html=True)
                     st.write("Le modèle détecte une probabilité importante de maladie cardiaque basée sur la base de données clinique de Cleveland. Consultez un cardiologue.")
                 elif risk_percentage >= 20:
-                    st.markdown(f"<div class='risk-medium'>Risque Modéré : {risk_percentage}%</div>", unsafe_allow_html=True)
+                    st.markdown("<h3 style='color: #ffb84d; text-align: center;'>Risque Modéré</h3>", unsafe_allow_html=True)
                     st.write("Le modèle détecte des facteurs de risque à surveiller.")
                 else:
-                    st.markdown(f"<div class='risk-low'>Risque Faible : {risk_percentage}%</div>", unsafe_allow_html=True)
+                    st.markdown("<h3 style='color: #4CAF50; text-align: center;'>Risque Faible</h3>", unsafe_allow_html=True)
                     st.write("Félicitations, votre profil de santé actuel suggère un risque cardiovasculaire faible.")
                     
             except Exception as e:

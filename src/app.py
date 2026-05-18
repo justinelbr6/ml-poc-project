@@ -59,11 +59,24 @@ def build_app():
             <p>Ce projet de Machine Learning vise à prédire le risque de maladie cardiaque à partir d'informations cliniques et comportementales.</p>
             <p>Dans la barre latérale, vous pourrez explorer :</p>
             <ul>
-                <li>📊 <b>Exploration des données</b> : Comprendre le profil de nos 10 000 patients.</li>
+                <li>📊 <b>Exploration des données</b> : Comprendre le profil de nos patients.</li>
                 <li>⚙️ <b>Feature Engineering</b> : Comment nous avons créé de nouvelles variables médicales pertinentes.</li>
                 <li>🤖 <b>Performances des modèles</b> : Pourquoi nous avons choisi le Gradient Boosting.</li>
                 <li>🩺 <b>Test Prédictif Patient</b> : Un espace interactif pour tester l'algorithme sur vous-même !</li>
             </ul>
+        </div>
+
+        <div class='card' style='border-left-color: #f39c12;'>
+            <h4>⚠️ Note sur le jeu de données (Mise à jour)</h4>
+            <p><b>Le problème avec l'ancien dataset :</b> Lors de la première phase du projet, nous utilisions un dataset très large (10 000 lignes) mais généré aléatoirement. Ces données synthétiques n'avaient aucune corrélation clinique réelle, ce qui empêchait le modèle d'apprendre des règles médicales viables.</p>
+            <p><b>Le dataset actuel (Cleveland) :</b> Pour garantir la validité médicale de notre PoC, nous sommes passés au dataset authentique <b>Heart Disease Cleveland</b> (Kaggle). Bien qu'il s'agisse de vraies données patients, le dataset est beaucoup plus petit (~300 patients).</p>
+            <p><b>Impact sur les régressions et le ML avec ce petit dataset :</b></p>
+            <ul>
+                <li><b>Surapprentissage (Overfitting) :</b> Le modèle risque d'apprendre "par cœur" l'échantillon d'entraînement.</li>
+                <li><b>Instabilité :</b> Les performances peuvent varier fortement selon le découpage (train/test split).</li>
+                <li><b>Baisse de puissance statistique :</b> Il est plus difficile de capter des relations subtiles entre les variables.</li>
+            </ul>
+            <p><i>Un compromis classique en Data Science : la validité clinique prime sur la quantité.</i></p>
         </div>
         """, unsafe_allow_html=True)
         
