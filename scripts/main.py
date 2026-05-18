@@ -146,7 +146,7 @@ def _ensure_data_and_dependencies() -> None:
         import kagglesdk.kaggle_env
     except Exception:
         print("Le module 'kagglehub' ou ses dépendances sont manquants/corrompus. Installation automatique en cours...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "kagglehub", "kagglesdk"])
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "--force-reinstall", "kagglehub", "kagglesdk"])
         print("Installation terminée avec succès.")
 
     data_path = PROJECT_ROOT / "data" / "Heart_disease_cleveland_new.csv"
