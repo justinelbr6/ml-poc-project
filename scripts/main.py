@@ -187,6 +187,28 @@ def _ensure_data_and_dependencies() -> None:
         else:
             print(f"Attention : Le script de téléchargement est introuvable à {download_script}")
 
+    # Vérifier que les modèles sont compatibles avec la version sklearn locale
+    models_dir = PROJECT_ROOT / "models"
+    needs_retrain = False
+    if not models_dir.exists() or not any(models_dir.glob("*.pkl")):
+        needs_retrain = True
+        print("Aucun modèle entraîné trouvé.")
+    else:
+        try:
+            import joblib as _joblib
+            for pkl in models_dir.glob("*.pkl"):
+                obj = _joblib.load(pkl)
+                if not hasattr(obj, "predict"):
+                    needs_retrain = True
+                    break
+        except Exception:
+            needs_retrain = True
+
+    if needs_retrain:
+        print("Réentraînement des modèles pour cet environnement (première exécution ou version sklearn différente)...")
+        _retrain_models()
+        print("Modèles prêts.")
+
 
 def main() -> None:
     _ensure_data_and_dependencies()
