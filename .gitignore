@@ -318,6 +318,7 @@ http-client.private.env.json
 # Exclude logs directory
 logs/*
 
-# Exclude data directory
-data/
+# Exclude data files but keep the directory
+data/*
+!data/.gitkeep
 *.csv
