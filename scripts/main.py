@@ -82,36 +82,8 @@ def _load_dataset() -> tuple[Any, Any, Any, Any]:
     return dataset_split
 
 
-def _retrain_models() -> None:
-    print("Réentraînement des modèles sur l'environnement local en cours...")
-    train_script = SCRIPT_DIR / "train_and_save_models.py"
-    if not train_script.exists():
-        raise FileNotFoundError(f"Script d'entraînement introuvable : {train_script}")
-    subprocess.check_call([sys.executable, str(train_script)])
-    print("Réentraînement terminé avec succès.")
-
-
 def _evaluate_models(X_test: Any, y_test: Any) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
-    need_retrain = False
-
-    # Vérifier d'abord que tous les modèles sont chargeable
-    for model_key, model_config in MODELS.items():
-        try:
-            model = load_model(Path(model_config["path"]))
-            if not hasattr(model, "predict"):
-                need_retrain = True
-                break
-        except Exception:
-            need_retrain = True
-            break
-
-    if need_retrain:
-        print(
-            "Les modèles sont incompatibles avec la version de scikit-learn installée.\n"
-            "Réentraînement automatique en cours..."
-        )
-        _retrain_models()
 
     for model_key, model_config in MODELS.items():
         model = load_model(Path(model_config["path"]))
@@ -186,28 +158,6 @@ def _ensure_data_and_dependencies() -> None:
             print("Téléchargement des données terminé.")
         else:
             print(f"Attention : Le script de téléchargement est introuvable à {download_script}")
-
-    # Vérifier que les modèles sont compatibles avec la version sklearn locale
-    models_dir = PROJECT_ROOT / "models"
-    needs_retrain = False
-    if not models_dir.exists() or not any(models_dir.glob("*.pkl")):
-        needs_retrain = True
-        print("Aucun modèle entraîné trouvé.")
-    else:
-        try:
-            import joblib as _joblib
-            for pkl in models_dir.glob("*.pkl"):
-                obj = _joblib.load(pkl)
-                if not hasattr(obj, "predict"):
-                    needs_retrain = True
-                    break
-        except Exception:
-            needs_retrain = True
-
-    if needs_retrain:
-        print("Réentraînement des modèles pour cet environnement (première exécution ou version sklearn différente)...")
-        _retrain_models()
-        print("Modèles prêts.")
 
 
 def main() -> None:

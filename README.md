@@ -1,8 +1,28 @@
-# ML Project Template
+# CardioCare AI — Heart Disease PoC
 
-This repository is the base template that each student will fork and adapt for the final machine learning proof-of-concept project.
+Proof of Concept de prédiction du risque de maladie cardiaque basé sur le dataset Cleveland (Kaggle).
 
-The template already defines the project structure and the main execution workflow. Your job as a student is to plug your own dataset loading logic, trained models, evaluation metrics, and Streamlit presentation into the fixed contracts described below.
+## ⚡ Lancement rapide
+
+> **⚠️ Important : utilisez `git clone`, pas "Download ZIP".**  
+> Le ZIP de GitHub n'inclut pas les fichiers `.pkl` des modèles déjà entraînés.
+
+```bash
+# 1. Cloner le dépôt (obligatoire)
+git clone https://github.com/justinelbr6/ml-poc-project.git
+cd ml-poc-project
+
+# 2. Lancer le projet (installe les dépendances et télécharge les données automatiquement)
+python3 scripts/main.py
+```
+
+Le script s'occupe automatiquement de :
+- Installer toutes les dépendances (`requirements.txt`)
+- Télécharger les données depuis Kaggle si absentes
+- Lancer l'application Streamlit sur http://127.0.0.1:8501
+
+---
+
 
 ## Repository Structure
 
