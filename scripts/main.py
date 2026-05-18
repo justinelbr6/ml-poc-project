@@ -82,8 +82,36 @@ def _load_dataset() -> tuple[Any, Any, Any, Any]:
     return dataset_split
 
 
+def _retrain_models() -> None:
+    print("Réentraînement des modèles sur l'environnement local en cours...")
+    train_script = SCRIPT_DIR / "train_and_save_models.py"
+    if not train_script.exists():
+        raise FileNotFoundError(f"Script d'entraînement introuvable : {train_script}")
+    subprocess.check_call([sys.executable, str(train_script)])
+    print("Réentraînement terminé avec succès.")
+
+
 def _evaluate_models(X_test: Any, y_test: Any) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
+    need_retrain = False
+
+    # Vérifier d'abord que tous les modèles sont chargeable
+    for model_key, model_config in MODELS.items():
+        try:
+            model = load_model(Path(model_config["path"]))
+            if not hasattr(model, "predict"):
+                need_retrain = True
+                break
+        except Exception:
+            need_retrain = True
+            break
+
+    if need_retrain:
+        print(
+            "Les modèles sont incompatibles avec la version de scikit-learn installée.\n"
+            "Réentraînement automatique en cours..."
+        )
+        _retrain_models()
 
     for model_key, model_config in MODELS.items():
         model = load_model(Path(model_config["path"]))
@@ -139,15 +167,15 @@ def _launch_streamlit() -> None:
 
 def _ensure_data_and_dependencies() -> None:
     print("Vérification des dépendances et des données...")
-    
-    try:
-        import kagglehub
-        # Tester un import interne critique qui a échoué chez Louis
-        import kagglesdk.kaggle_env
-    except Exception:
-        print("Le module 'kagglehub' ou ses dépendances sont manquants/corrompus. Installation automatique en cours...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "--force-reinstall", "kagglehub", "kagglesdk"])
-        print("Installation terminée avec succès.")
+
+    requirements_file = PROJECT_ROOT / "requirements.txt"
+    if requirements_file.exists():
+        print("Installation des dépendances depuis requirements.txt...")
+        subprocess.check_call([
+            sys.executable, "-m", "pip", "install", "-r", str(requirements_file), "--quiet"
+        ])
+    else:
+        print("Attention : fichier requirements.txt introuvable, installation ignorée.")
 
     data_path = PROJECT_ROOT / "data" / "Heart_disease_cleveland_new.csv"
     if not data_path.exists():
