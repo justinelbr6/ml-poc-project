@@ -142,10 +142,12 @@ def _ensure_data_and_dependencies() -> None:
     
     try:
         import kagglehub
-    except ImportError:
-        print("Le module 'kagglehub' n'est pas installé. Installation automatique en cours...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "kagglehub"])
-        print("Installation de 'kagglehub' terminée avec succès.")
+        # Tester un import interne critique qui a échoué chez Louis
+        import kagglesdk.kaggle_env
+    except Exception:
+        print("Le module 'kagglehub' ou ses dépendances sont manquants/corrompus. Installation automatique en cours...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "kagglehub", "kagglesdk"])
+        print("Installation terminée avec succès.")
 
     data_path = PROJECT_ROOT / "data" / "Heart_disease_cleveland_new.csv"
     if not data_path.exists():
