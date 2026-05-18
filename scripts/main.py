@@ -137,7 +137,29 @@ def _launch_streamlit() -> None:
     )
 
 
+def _ensure_data_and_dependencies() -> None:
+    print("Vérification des dépendances et des données...")
+    
+    try:
+        import kagglehub
+    except ImportError:
+        print("Le module 'kagglehub' n'est pas installé. Installation automatique en cours...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "kagglehub"])
+        print("Installation de 'kagglehub' terminée avec succès.")
+
+    data_path = PROJECT_ROOT / "data" / "Heart_disease_cleveland_new.csv"
+    if not data_path.exists():
+        print("Les données sont introuvables. Téléchargement depuis Kaggle en cours...")
+        download_script = SCRIPT_DIR / "download_data.py"
+        if download_script.exists():
+            subprocess.check_call([sys.executable, str(download_script)])
+            print("Téléchargement des données terminé.")
+        else:
+            print(f"Attention : Le script de téléchargement est introuvable à {download_script}")
+
+
 def main() -> None:
+    _ensure_data_and_dependencies()
     _validate_app_entrypoint()
     _validate_models_config()
 
